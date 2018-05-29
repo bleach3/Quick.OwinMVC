@@ -120,6 +120,7 @@
     <Compile Include="Routing\RouteAttribute.cs" />
     <Compile Include="Routing\RouteBuilder.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="Utils\Kernel32OutputDebugString2.cs" />
     <Compile Include="Utils\MultipartFormDataUtils.cs" />
     <Compile Include="Utils\PathUtils.cs" />
     <Compile Include="WebServer\IWebServer.cs" />
