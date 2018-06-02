@@ -10,8 +10,8 @@ namespace Quick.OwinMVC.Middleware
 {
     public class StaticViewMiddleware : AbstractPluginPathMiddleware, IPropertyHunter
     {
-        //过期时间(默认1秒)
-        public double Expires { get; private set; } = 1;
+        //过期时间(默认1秒),*****1秒根本不会缓存...对服务器来说js太多,压力太大.
+        public double Expires { get; private set; } = 86400;
         //视图文件后缀
         public string ViewFileSuffix { get; private set; }
 
@@ -33,6 +33,7 @@ namespace Quick.OwinMVC.Middleware
         public override Task Invoke(IOwinContext context, string plugin, string path)
         {
             var resourceMiddleware = Server.Instance.GetMiddleware<ResourceMiddleware>();
+            App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** StaticViewMiddleware  Path={context.Request.Uri.OriginalString}  ");
             return resourceMiddleware.InvokeFinal(context, Route, ViewFileSuffix, plugin, path, t => Next.Invoke(t), Expires, AddonHttpHeaders);
         }
     }

@@ -95,6 +95,7 @@ namespace Quick.OwinMVC.Middleware
             var rep = context.Response;
             //验证缓存有效
             {
+
                 //===================
                 //先验证最后修改时间
                 //===================
@@ -103,10 +104,16 @@ namespace Quick.OwinMVC.Middleware
                 var clientLastModified = req.Headers.Get("If-Modified-Since");
                 if (clientLastModified != null)
                 {
-                    if (clientLastModified == resourceLastModified.ToString("R"))
+                    string resourceLastModifiedR = resourceLastModified.ToString("R");
+                    if (clientLastModified == resourceLastModifiedR)
                     {
+                        App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"***验证缓存有效 Path={context.Request.Uri.OriginalString} ,clientLastModified == resourceLastModified ");
                         rep.StatusCode = 304;
-                        return Task.Run(() => stream.Dispose());
+                        return Task.Run(() => {
+                            stream.Close();
+                            stream.Dispose();
+                        }
+                        );
                     }
                 }
                 //===================
@@ -122,15 +129,24 @@ namespace Quick.OwinMVC.Middleware
                 //如果客户端的ETag值与服务端相同，则返回304，表示资源未修改
                 if (serverETag == clientETag)
                 {
+                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"***表示资源未修改 Path={context.Request.Uri.OriginalString} 2");
                     rep.StatusCode = 304;
-                    return Task.Run(() => stream.Dispose());
+                    return Task.Run(() => {
+                        stream.Close();
+                        stream.Dispose(); });
                 }
                 rep.ETag = serverETag;
                 stream.Position = 0;
             }
+
+            //===================
+            //设置缓存 等头信息.
+            //===================
             rep.Expires = new DateTimeOffset(DateTime.Now.AddSeconds(expires));
-            rep.Headers["Cache-Control"] = $"max-age={expires}";
+            rep.Headers["Cache-Control"] = $"public,max-age={expires}";//1天失效.
             rep.Headers["Last-Modified"] = resourceResponse.LastModified.ToUniversalTime().ToString("R");
+            rep.Headers["Access-Control-Allow-Origin"] = "*";//如果设置 Access-Control-Allow-Origin:*，则允许所有域名的脚本访问该资源
+
             return context.Output(stream, true, EnableCompress, resourceResponse.Uri.LocalPath, addonHttpHeaders);
         }
 
