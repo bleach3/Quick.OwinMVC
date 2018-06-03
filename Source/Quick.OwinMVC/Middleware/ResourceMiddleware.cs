@@ -65,7 +65,7 @@ namespace Quick.OwinMVC.Middleware
 
         public override Task Invoke(IOwinContext context, string plugin, string path)
         {
-            App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddleware Path={context.Request.Uri.OriginalString} ");
+            //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddleware Path={context.Request.Uri.OriginalString} ");
 
             return InvokeFinal(context, Route, null, plugin, path, t => InvokeNotMatch(context), Expires, AddonHttpHeaders);
         }
