@@ -142,7 +142,7 @@ namespace Quick.OwinMVC.Middleware
                     string resourceLastModifiedR = resourceLastModified.ToString("R");
                     if (clientLastModified == resourceLastModifiedR)
                     {
-                        App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware 验证缓存有效 Path={context.Request.Uri.OriginalString} ,Expires={expires} ,clientLastModified == resourceLastModified ");
+                        //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware 验证缓存有效 Path={context.Request.Uri.OriginalString} ,Expires={expires} ,clientLastModified == resourceLastModified ");
                         rep.StatusCode = 304;
                         return Task.Run(() => {
                             stream.Close();
@@ -164,7 +164,7 @@ namespace Quick.OwinMVC.Middleware
                 //如果客户端的ETag值与服务端相同，则返回304，表示资源未修改
                 if (serverETag == clientETag)
                 {
-                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware 表示资源未修改 Path={context.Request.Uri.OriginalString},Expires={expires} 2");
+                    //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware 表示资源未修改 Path={context.Request.Uri.OriginalString},Expires={expires} 2");
                     rep.StatusCode = 304;
                     return Task.Run(() => {
                         stream.Close();
@@ -216,7 +216,7 @@ namespace Quick.OwinMVC.Middleware
                     string resourceLastModifiedR = resourceLastModified.ToString("R");
                     if (clientLastModified == resourceLastModifiedR)
                     {
-                        App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware fileinfo 验证缓存有效 Path={context.Request.Uri.OriginalString} ,Expires={expires} ,clientLastModified == resourceLastModified ");
+                        //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware fileinfo 验证缓存有效 Path={context.Request.Uri.OriginalString} ,Expires={expires} ,clientLastModified == resourceLastModified ");
                         rep.StatusCode = 304;
                         return Task.Run(() =>
                         {
@@ -239,7 +239,7 @@ namespace Quick.OwinMVC.Middleware
                 //如果客户端的ETag值与服务端相同，则返回304，表示资源未修改
                 if (serverETag == clientETag)
                 {
-                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware  fileinfo 表示资源未修改 Path={context.Request.Uri.OriginalString},Expires={expires} 2");
+                    //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware  fileinfo 表示资源未修改 Path={context.Request.Uri.OriginalString},Expires={expires} 2");
                     rep.StatusCode = 304;
                     return Task.Run(() =>
                     {
