@@ -24,6 +24,8 @@ namespace Quick.OwinMVC.Middleware
 
         public override Task Invoke(IOwinContext context)
         {
+            App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"HttpMiddleware Path={context.Request.Uri.OriginalString} ");
+
             String path = context.Get<String>("owin.RequestPath");
             HttpController controller = null;
             foreach (Regex regex in routes.Keys)

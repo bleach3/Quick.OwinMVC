@@ -83,6 +83,7 @@
     <Compile Include="Middleware\ResourceMiddleware.cs" />
     <Compile Include="Middleware\RewriteMiddleware.cs" />
     <Compile Include="Middleware\SessionMiddleware.cs" />
+    <Compile Include="Middleware\ImgViewMiddleware.cs" />
     <Compile Include="Middleware\StaticViewMiddleware.cs" />
     <Compile Include="Model\IRunnable.cs" />
     <Compile Include="Node\AbstractMethod.cs" />
