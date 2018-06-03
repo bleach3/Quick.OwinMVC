@@ -34,7 +34,7 @@ namespace Quick.OwinMVC.Middleware
         public override Task Invoke(IOwinContext context, string plugin, string path)
         {
             var resourceMiddleware = Server.Instance.GetMiddleware<ResourceMiddleware>();
-            App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ImgViewMiddleware  Path={context.Request.Uri.OriginalString} ,Expires={Expires},ViewFileSuffix={ViewFileSuffix} ");
+            //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ImgViewMiddleware  Path={context.Request.Uri.OriginalString} ,Expires={Expires},ViewFileSuffix={ViewFileSuffix} ");
             return resourceMiddleware.InvokeFinal(context, "", "", plugin, path, t => Next.Invoke(t), Expires, AddonHttpHeaders,true);
         }
 

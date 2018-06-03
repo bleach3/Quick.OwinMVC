@@ -87,7 +87,7 @@ namespace Quick.OwinMVC.Middleware
 
             context.Set("ContextPath", contextPath);
 
-            App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"aaa MiddlewareContext  Path={context.Request.Uri.OriginalString} ");
+            //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"aaa MiddlewareContext  Path={context.Request.Uri.OriginalString} ");
 
             return Next.Invoke(context);
         }

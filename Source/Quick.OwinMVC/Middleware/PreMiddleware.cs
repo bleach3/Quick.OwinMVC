@@ -17,7 +17,7 @@ namespace Quick.OwinMVC.Middleware
 
         public override Task Invoke(IOwinContext context)
         {
-            App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"PreMiddleware Path={context.Request.Uri.OriginalString} ");
+            //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"PreMiddleware Path={context.Request.Uri.OriginalString} ");
             return PreMiddlewareManager.Instance.HeadMiddleware.Invoke(context);
         }
     }

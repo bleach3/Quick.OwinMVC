@@ -112,7 +112,7 @@ namespace Quick.OwinMVC.Middleware
 
         private Task handleResource(IOwinContext context, Stream stream, ResourceWebResponse resourceResponse, double expires, IDictionary<string, string> addonHttpHeaders)
         {
-            App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddlewar url ");
+            //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddlewar url ");
             var req = context.Request;
             var rep = context.Response;
             //验证缓存有效
@@ -123,12 +123,12 @@ namespace Quick.OwinMVC.Middleware
                 var retClientConfirm =req.Headers.Keys.Where(x => x.ToLower().CompareTo("cache-control") == 0 ).FirstOrDefault();
                 if (retClientConfirm != null)
                 {
-                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddlewar222e Path={context.Request.Uri.OriginalString} ret!=null ");
+                    //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddlewar222e Path={context.Request.Uri.OriginalString} ret!=null ");
                     rep.Headers["Cache-Control"] = $"public,max-age={expires}";//1天失效.
                 }
                 else
                 {
-                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddleware Path={context.Request.Uri.OriginalString} ret==null ");
+                    //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddleware Path={context.Request.Uri.OriginalString} ret==null ");
                 }
                     
                 //===================
@@ -186,7 +186,7 @@ namespace Quick.OwinMVC.Middleware
         }
         private Task handleResource(IOwinContext context, Stream stream, FileInfo fileinfo, double expires, IDictionary<string, string> addonHttpHeaders,string filepath)
         {
-            App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddlewar fileinfo ");
+            //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddlewar fileinfo ");
             var req = context.Request;
             var rep = context.Response;
             //验证缓存有效
@@ -197,12 +197,12 @@ namespace Quick.OwinMVC.Middleware
                 var retClientConfirm = req.Headers.Keys.Where(x => x.ToLower().CompareTo("cache-control") == 0).FirstOrDefault();
                 if (retClientConfirm != null)
                 {
-                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddlewar222e Path={context.Request.Uri.OriginalString} ret!=null ");
+                    //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddlewar fileinfo Path={context.Request.Uri.OriginalString} ret!=null ");
                     rep.Headers["Cache-Control"] = $"public,max-age={expires}";//1天失效.
                 }
                 else
                 {
-                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddleware Path={context.Request.Uri.OriginalString} ret==null ");
+                    //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"ResourceMiddleware fileinfo Path={context.Request.Uri.OriginalString} ret==null ");
                 }
 
                 //===================
@@ -216,7 +216,7 @@ namespace Quick.OwinMVC.Middleware
                     string resourceLastModifiedR = resourceLastModified.ToString("R");
                     if (clientLastModified == resourceLastModifiedR)
                     {
-                        App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware 验证缓存有效 Path={context.Request.Uri.OriginalString} ,Expires={expires} ,clientLastModified == resourceLastModified ");
+                        App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware fileinfo 验证缓存有效 Path={context.Request.Uri.OriginalString} ,Expires={expires} ,clientLastModified == resourceLastModified ");
                         rep.StatusCode = 304;
                         return Task.Run(() =>
                         {
@@ -239,7 +239,7 @@ namespace Quick.OwinMVC.Middleware
                 //如果客户端的ETag值与服务端相同，则返回304，表示资源未修改
                 if (serverETag == clientETag)
                 {
-                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware 表示资源未修改 Path={context.Request.Uri.OriginalString},Expires={expires} 2");
+                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddleware  fileinfo 表示资源未修改 Path={context.Request.Uri.OriginalString},Expires={expires} 2");
                     rep.StatusCode = 304;
                     return Task.Run(() =>
                     {

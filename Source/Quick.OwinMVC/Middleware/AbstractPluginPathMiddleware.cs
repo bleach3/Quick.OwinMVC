@@ -50,7 +50,7 @@ namespace Quick.OwinMVC.Middleware
 
         public override Task Invoke(IOwinContext context)
         {
-            App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"@@@ AbstractPluginPathMiddleware ,OriginalString={context.Request.Uri.OriginalString},LocalPath={context.Request.Uri.LocalPath}  ,Route={Route}");
+            //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"@@@ AbstractPluginPathMiddleware ,OriginalString={context.Request.Uri.OriginalString},LocalPath={context.Request.Uri.LocalPath}  ,Route={Route}");
             bool bIsMatch = false;
             String path = context.Get<String>("owin.RequestPath");
             string strfix = Path.GetExtension(path);
@@ -73,7 +73,7 @@ namespace Quick.OwinMVC.Middleware
                         bIsMatch = true;
                         var myImgViewMiddleware = Server.Instance.GetMiddleware<ImgViewMiddleware>();
                         string strUrlpath = $"Config/Template/{strRetTemp[3]}/{strRetTemp[4]}";
-                        App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** myImgViewMiddleware  Path={context.Request.Uri.OriginalString} ,strUrlpath={strUrlpath}");
+                        //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** myImgViewMiddleware  Path={context.Request.Uri.OriginalString} ,strUrlpath={strUrlpath}");
                         
                         return myImgViewMiddleware.Invoke(context, context.Get<String>(QOMVC_PLUGIN_KEY), strUrlpath);
                     }
