@@ -51,14 +51,14 @@ namespace Quick.OwinMVC.Middleware
         public override Task Invoke(IOwinContext context)
         {
             //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"@@@ AbstractPluginPathMiddleware ,OriginalString={context.Request.Uri.OriginalString},LocalPath={context.Request.Uri.LocalPath}  ,Route={Route}");
-            bool bIsMatch = false;
             String path = context.Get<String>("owin.RequestPath");
             string strfix = Path.GetExtension(path);
             if ( ( context.Request.Uri.LocalPath.Contains("Plugin.CCEX/cc")  ) &&
-                context.Request.Uri.LocalPath.Contains("/UpLoadFile_")
+                context.Request.Uri.LocalPath.Contains("/UpLoadFile_") &&
+                (ImageType!=null)
                 )
             {
-                string[] fixList = this.ImageType.Split('#');
+                string[] fixList = ImageType.Split('#');
                 var retClientConfirm = fixList.Where(x => x.ToLower().CompareTo(strfix.ToLower()) == 0).FirstOrDefault();
                 if (retClientConfirm != null)
                 //if (strfix.ToLower().Contains(".png") ||
@@ -70,7 +70,6 @@ namespace Quick.OwinMVC.Middleware
                     string[] strRetTemp = context.Request.Uri.LocalPath.Split('/');
                     if(strRetTemp.Length>=5 && strRetTemp[1]== "Plugin.CCEX" && strRetTemp[4].Contains("UpLoadFile_"))
                     {
-                        bIsMatch = true;
                         var myImgViewMiddleware = Server.Instance.GetMiddleware<ImgViewMiddleware>();
                         string strUrlpath = $"Config/Template/{strRetTemp[3]}/{strRetTemp[4]}";
                         //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** myImgViewMiddleware  Path={context.Request.Uri.OriginalString} ,strUrlpath={strUrlpath}");
