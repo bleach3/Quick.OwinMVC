@@ -25,9 +25,15 @@ namespace Quick.OwinMVC.Middleware
         public String Route { get; private set; }
 
         /// <summary>
+        /// 要处理资源图片的特殊路径
+        /// </summary>
+        public string SpecialPath { get; set; }
+
+        /// <summary>
         /// 资源类型
         /// </summary>
         public string ImageType { get; set; }
+
         /// <summary>
         /// 是否启用压缩
         /// </summary>
@@ -53,19 +59,17 @@ namespace Quick.OwinMVC.Middleware
             //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"@@@ AbstractPluginPathMiddleware ,OriginalString={context.Request.Uri.OriginalString},LocalPath={context.Request.Uri.LocalPath}  ,Route={Route}");
             String path = context.Get<String>("owin.RequestPath");
             string strfix = Path.GetExtension(path);
-            if ( ( context.Request.Uri.LocalPath.Contains("Plugin.CCEX/cc")  ) &&
-                context.Request.Uri.LocalPath.Contains("/UpLoadFile_") &&
-                (ImageType!=null)
+            if (
+                (false == String.IsNullOrEmpty(SpecialPath) )&&
+                (false==String.IsNullOrEmpty(ImageType)  )
                 )
             {
+                string[] pathList = SpecialPath.Split('#');
                 string[] fixList = ImageType.Split('#');
+
+                var retpathList = pathList.Where(x => context.Request.Uri.LocalPath.Contains(x) ).FirstOrDefault();
                 var retClientConfirm = fixList.Where(x => x.ToLower().CompareTo(strfix.ToLower()) == 0).FirstOrDefault();
-                if (retClientConfirm != null)
-                //if (strfix.ToLower().Contains(".png") ||
-                //            strfix.ToLower().Contains(".jpg") ||
-                //            strfix.ToLower().Contains(".jpge") ||
-                //            strfix.ToLower().Contains(".bmp") ||
-                //            strfix.ToLower().Contains(".ico") )
+                if (retClientConfirm != null && retpathList != null)
                 {
                     string[] strRetTemp = context.Request.Uri.LocalPath.Split('/');
                     if(strRetTemp.Length>=5 && strRetTemp[1]== "Plugin.CCEX" && strRetTemp[4].Contains("UpLoadFile_"))
@@ -73,13 +77,11 @@ namespace Quick.OwinMVC.Middleware
                         var myImgViewMiddleware = Server.Instance.GetMiddleware<ImgViewMiddleware>();
                         string strUrlpath = $"Config/Template/{strRetTemp[3]}/{strRetTemp[4]}";
                         //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** myImgViewMiddleware  Path={context.Request.Uri.OriginalString} ,strUrlpath={strUrlpath}");
-                        
                         return myImgViewMiddleware.Invoke(context, context.Get<String>(QOMVC_PLUGIN_KEY), strUrlpath);
                     }
                     
                 }
 
-                return InvokeNotMatch(context);
             }
            
             if ((false==route.IsMatch(path)   ))
@@ -127,6 +129,9 @@ namespace Quick.OwinMVC.Middleware
                     break;
                 case nameof(ImageType):
                     ImageType = value;
+                    break;
+                case nameof(SpecialPath):
+                    SpecialPath = value;
                     break;
                 case nameof(AddonHttpHeaders):
                     AddonHttpHeaders = new Dictionary<string, string>();
