@@ -56,53 +56,71 @@ namespace Quick.OwinMVC.Middleware
 
         public override Task Invoke(IOwinContext context)
         {
-            //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"@@@ AbstractPluginPathMiddleware ,OriginalString={context.Request.Uri.OriginalString},LocalPath={context.Request.Uri.LocalPath}  ,Route={Route}");
-            String path = context.Get<String>("owin.RequestPath");
-            string strfix = Path.GetExtension(path);
-            if (
-                (false == String.IsNullOrEmpty(SpecialPath) )&&
-                (false==String.IsNullOrEmpty(ImageType)  )
-                )
+            try
             {
-                string[] pathList = SpecialPath.Split('#');
-                string[] fixList = ImageType.Split('#');
-
-                var retpathList = pathList.Where(x => context.Request.Uri.LocalPath.Contains(x) ).FirstOrDefault();
-                var retClientConfirm = fixList.Where(x => x.ToLower().CompareTo(strfix.ToLower()) == 0).FirstOrDefault();
-                if (retClientConfirm != null && retpathList != null)
+                //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"@@@ AbstractPluginPathMiddleware ,OriginalString={context.Request.Uri.OriginalString},LocalPath={context.Request.Uri.LocalPath}  ,Route={Route}");
+                String path = context.Get<String>("owin.RequestPath");
+                string strfix = Path.GetExtension(path);
+                if (
+                    (false == String.IsNullOrEmpty(SpecialPath)) &&
+                    (false == String.IsNullOrEmpty(ImageType))
+                    )
                 {
-                    string[] strRetTemp = context.Request.Uri.LocalPath.Split('/');
-                    if(strRetTemp.Length>=5 && strRetTemp[1]== "Plugin.CCEX" && strRetTemp[4].Contains("UpLoadFile_"))
+                    string[] pathList = SpecialPath.Split('#');
+                    string[] fixList = ImageType.Split('#');
+
+                    var retpathList = pathList.Where(x => context.Request.Uri.LocalPath.Contains(x)).FirstOrDefault();
+                    var retClientConfirm = fixList.Where(x => x.ToLower().CompareTo(strfix.ToLower()) == 0).FirstOrDefault();
+                    if (retClientConfirm != null && retpathList != null)
                     {
-                        var myImgViewMiddleware = Server.Instance.GetMiddleware<ImgViewMiddleware>();
-                        string strUrlpath = $"Config/Template/{strRetTemp[3]}/{strRetTemp[4]}";
-                        //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** myImgViewMiddleware  Path={context.Request.Uri.OriginalString} ,strUrlpath={strUrlpath}");
-                        return myImgViewMiddleware.Invoke(context, context.Get<String>(QOMVC_PLUGIN_KEY), strUrlpath);
+                        // /Plugin.CCEX/cc/9302a70e3a3b4ce7813584f819ceb5c5/ShowFrame.html
+                        string[] strRetTemp = context.Request.Uri.LocalPath.Split('/');
+                        if (strRetTemp != null &&
+                            strRetTemp.Length >= 5 && strRetTemp[3].Length == 32)
+                        {
+                            var myImgViewMiddleware = Server.Instance.GetMiddleware<ImgViewMiddleware>();
+                            if(myImgViewMiddleware==null)
+                            {
+                                App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** AbstractPluginPathMiddleware  ImgViewMiddleware ==null");
+                            }
+                            else
+                            {
+                                string strUrlpath = $"Config/Template/{strRetTemp[3]}/{strRetTemp[4]}";
+                                //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** AbstractPluginPathMiddleware  Path={context.Request.Uri.OriginalString} ,strUrlpath={strUrlpath}");
+                                return myImgViewMiddleware.Invoke(context, "", strUrlpath);
+                            }
+
+
+                        }
                     }
-                    
                 }
 
-            }
-           
-            if ((false==route.IsMatch(path)   ))
-                return InvokeNotMatch(context);
+                if (null == route || (false == route.IsMatch(path)))
+                    return InvokeNotMatch(context);
 
-            //如果还没有解析插件名称和路径
-            if (context.Get<String>(QOMVC_PLUGIN_KEY) == null)
+                //如果还没有解析插件名称和路径
+                if (context.Get<String>(QOMVC_PLUGIN_KEY) == null)
+                {
+                    var groups = route.Match(path).Groups;
+                    var dic = route.GetGroupNames().ToDictionary(name => name, name => groups[name].Value);
+                    foreach (var key in dic.Keys.Where(t => t != "0"))
+                        context.Environment.Add(key, dic[key]);
+                }
+
+                //添加额外的HTTP头
+                if (AddonHttpHeaders != null && AddonHttpHeaders.Count > 0)
+                    foreach (var header in AddonHttpHeaders)
+                        context.Response.Headers[header.Key] = header.Value;
+
+                //交给派生的Middleware
+                return Invoke(context, context.Get<String>(QOMVC_PLUGIN_KEY), context.Get<String>(QOMVC_PATH_KEY));
+            }
+            catch (Exception ex)
             {
-                var groups = route.Match(path).Groups;
-                var dic = route.GetGroupNames().ToDictionary(name => name, name => groups[name].Value);
-                foreach (var key in dic.Keys.Where(t => t != "0"))
-                    context.Environment.Add(key, dic[key]);
+                App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"***AbstractPluginPathMiddleware  Exception   Path={context.Request.Uri.OriginalString} ,ex={ex.Message},ex={ex.StackTrace}");
+                return InvokeNotMatch(context);
             }
 
-            //添加额外的HTTP头
-            if (AddonHttpHeaders != null && AddonHttpHeaders.Count > 0)
-                foreach (var header in AddonHttpHeaders)
-                    context.Response.Headers[header.Key] = header.Value;
-
-            //交给派生的Middleware
-            return Invoke(context, context.Get<String>(QOMVC_PLUGIN_KEY), context.Get<String>(QOMVC_PATH_KEY));
         }
 
         public abstract Task Invoke(IOwinContext context, String plugin, String path);

@@ -74,6 +74,8 @@ namespace Quick.OwinMVC.Middleware
             Func<IOwinContext, Task> noMatchHandler, double expires, IDictionary<string, string> addonHttpHeaders,
             bool IsCCEXResource=false)
         {
+            //App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"*** ResourceMiddle 22222 Path={context.Request.Uri.OriginalString} ,Expires={Expires} path2={path} ");
+
             //加前缀
             if (!String.IsNullOrEmpty(prefix))
                 path = $"{prefix}/{path}";
@@ -92,10 +94,21 @@ namespace Quick.OwinMVC.Middleware
             {
                 //Config\Template\00ab4f6fa57242599b2caa134e4ee434
                 string strfilepath = Path.Combine(path);
+                if(String.IsNullOrEmpty(strfilepath))
+                    return noMatchHandler(context);
+
                 var fileInfo = new FileInfo(strfilepath);
-                stream = fileInfo.OpenRead();
-                if (stream != null)
-                    return handleResource(context, stream, fileInfo, expires, addonHttpHeaders, strfilepath);
+                if (fileInfo != null)
+                {
+                    stream = fileInfo.OpenRead();
+                    if (stream != null)
+                        return handleResource(context, stream, fileInfo, expires, addonHttpHeaders, strfilepath);
+                }
+                else
+                {
+                    App.Core.Utils.Helper.Kernel32OutputDebugString2.COutputDebugString($"### ResourceMiddleware Path={context.Request.Uri.OriginalString} strfilepath={strfilepath} error");
+                }
+
             }
             else
             {
