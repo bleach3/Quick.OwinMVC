@@ -21,38 +21,38 @@ namespace Quick.OwinMVC.Startup.Static
                 Console.Title = ProgramUtils.GetProgramVersion();
 
             service.Start(null);
-            while (true)
-            {
-                Console.Write(">");
-                var line = Console.ReadLine();
-                switch (line)
-                {
-                    case "":
-                        break;
-                    case "help":
-                        Console.WriteLine("help\t显示帮助");
-                        Console.WriteLine("cls\t清空屏幕");
-                        Console.WriteLine("exit\t退出程序");
-                        break;
-                    case "cls":
-                        Console.Clear();
-                        break;
-                    case "exit":
-                        if (ProgramUtils.IsRuningOnWindows())
-                            Environment.Exit(0);
-                        else
-                            Process.GetCurrentProcess().Kill();
-                        return;
-                    default:
-                        Console.WriteLine("未知命令，键入help查看帮助");
-                        break;
-                }                
-                if (!ProgramUtils.IsRuningOnWindows())
-                {
-                    Console.WriteLine("Unknown command.you have to kill this process to terminal program.");
-                    Thread.CurrentThread.Join();
-                }
-            }
+            //while (true)
+            //{
+            //    Console.Write(">");
+            //    var line = Console.ReadLine();
+            //    switch (line)
+            //    {
+            //        case "":
+            //            break;
+            //        case "help":
+            //            Console.WriteLine("help\t显示帮助");
+            //            Console.WriteLine("cls\t清空屏幕");
+            //            Console.WriteLine("exit\t退出程序");
+            //            break;
+            //        case "cls":
+            //            Console.Clear();
+            //            break;
+            //        case "exit":
+            //            if (ProgramUtils.IsRuningOnWindows())
+            //                Environment.Exit(0);
+            //            else
+            //                Process.GetCurrentProcess().Kill();
+            //            return;
+            //        default:
+            //            Console.WriteLine("未知命令，键入help查看帮助");
+            //            break;
+            //    }                
+            //    if (!ProgramUtils.IsRuningOnWindows())
+            //    {
+            //        Console.WriteLine("Unknown command.you have to kill this process to terminal program.");
+            //        Thread.CurrentThread.Join();
+            //    }
+            //}
         }
     }
 }
